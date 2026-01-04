@@ -1,232 +1,270 @@
-# Neural-x1-ultra4<!DOCTYPE html>
-<html class="dark" lang="it">
+<!DOCTYPE html>
+<html lang="it" class="dark">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AI Bet Generator - Neural X-1</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#135bec",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#101622",
-                        "card-dark": "#1a2230",
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"],
-                        "body": ["Noto Sans", "sans-serif"],
-                    },
-                    borderRadius: {"DEFAULT": "0.25rem", "md": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neural X-1 Ultra 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #101622; }
-        ::-webkit-scrollbar-thumb { background: #232f48; border-radius: 4px; }
-        .scanning-line {
-            position: absolute; inset: 0;
-            background: linear-gradient(to bottom, transparent, rgba(19,91,236,0.2), transparent);
-            animation: scan 2s linear infinite; pointer-events: none;
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --primary: #135bec;
+            --accent: #10b981;
+            --bg-dark: #0a0c14;
+            --card-dark: #161b2a;
         }
-        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: #e2e8f0; 
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; animation: fadeIn 0.3s ease-in-out; }
+        .page.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .neo-card { background: var(--card-dark); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; }
+        .glass-nav { background: rgba(10, 12, 20, 0.8); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.08); }
+        
+        /* Nasconde la scrollbar */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased min-h-screen flex flex-col overflow-x-hidden">
+<body>
 
-    <!-- Header -->
-    <div class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div class="flex items-center p-4 justify-between max-w-md mx-auto w-full">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
-                    <span class="material-symbols-outlined text-[24px]">smart_toy</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-bold leading-none tracking-tight uppercase italic">Neural<span class="text-primary">X1</span></h2>
-                    <p id="system-status-sub" class="text-[10px] text-slate-500 font-medium uppercase mt-1">v2.5.0 • Pronto</p>
-                </div>
-            </div>
-            <button onclick="location.reload()" class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">sync</span>
-            </button>
-        </div>
+    <!-- Schermata di Caricamento -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-500">
+        <i class="fas fa-brain text-primary text-5xl animate-pulse mb-4"></i>
+        <h1 class="text-xl font-black italic uppercase tracking-tighter">Neural<span class="text-primary">X1</span></h1>
+        <p class="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest">Inizializzazione Sistema...</p>
     </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col max-w-md mx-auto w-full p-4 gap-6">
+    <!-- Header Fisso -->
+    <header id="main-header" class="hidden fixed top-0 w-full z-40 p-4 flex justify-between items-center bg-black/60 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+            <div class="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <h2 class="text-xs font-black uppercase italic tracking-tighter">Neural<span class="text-primary">X1</span> <span class="text-zinc-500">ULTRA 4</span></h2>
+        </div>
+        <i class="fas fa-signal text-zinc-400 text-xs"></i>
+    </header>
+
+    <!-- Contenuto Principale -->
+    <main>
         
-        <!-- Status Terminal -->
-        <div class="w-full rounded-xl overflow-hidden relative group" id="status-terminal">
-            <div class="absolute inset-0 bg-primary/5"></div>
-            <div class="absolute inset-0 border border-primary/30 rounded-xl"></div>
-            <div class="relative p-5 flex flex-col gap-3">
-                <div class="flex justify-between items-center border-b border-primary/20 pb-2">
-                    <div class="flex items-center gap-2">
-                        <span id="status-dot" class="flex size-2 rounded-full bg-green-500"></span>
-                        <span class="text-[10px] font-bold tracking-widest text-primary uppercase">Neural Terminal</span>
+        <!-- Pagina Iniziale -->
+        <section id="welcome" class="page active flex flex-col items-center justify-center px-8 text-center">
+            <div class="relative mb-8">
+                <div class="absolute inset-0 bg-primary blur-3xl opacity-30 animate-pulse"></div>
+                <i class="fas fa-microchip text-6xl text-primary relative"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold mb-4">Potenza Neurale al tuo servizio</h1>
+            <p class="text-zinc-500 text-sm mb-10">Analisi predittiva in tempo reale per scommesse ad alta precisione.</p>
+            <button onclick="startApp()" class="w-full bg-primary py-4 rounded-2xl font-bold text-white shadow-lg shadow-primary/30 active:scale-95 transition-transform">AVVIA OS</button>
+        </section>
+
+        <!-- Dashboard / Generatore -->
+        <section id="home" class="page px-4 pt-20">
+            <div class="mb-6 px-1">
+                <h3 class="text-lg font-bold">Generatore IA</h3>
+                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Seleziona la tua strategia</p>
+            </div>
+            
+            <div class="neo-card p-5">
+                <div class="grid grid-cols-2 gap-3 mb-5">
+                    <button class="bg-white/5 p-4 rounded-xl text-left border-l-4 border-primary">
+                        <i class="fas fa-bolt text-primary mb-2"></i>
+                        <h4 class="text-xs font-bold">Multi Mix</h4>
+                        <p class="text-[8px] text-zinc-500">Quota ~3.50</p>
+                    </button>
+                    <button onclick="navigateTo('surebet')" class="bg-white/5 p-4 rounded-xl text-left border-l-4 border-emerald-500">
+                        <i class="fas fa-bullseye text-emerald-500 mb-2"></i>
+                        <h4 class="text-xs font-bold">Surebet</h4>
+                        <p class="text-[8px] text-zinc-500">Rischio Zero</p>
+                    </button>
+                </div>
+                <button onclick="simulateGeneration()" id="gen-btn" class="w-full bg-primary py-4 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i class="fas fa-wand-magic-sparkles"></i> Analizza Mercati
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <h4 class="text-[10px] font-black uppercase text-zinc-500 tracking-widest px-1">Top Pick del momento</h4>
+                <div class="neo-card p-4 flex justify-between items-center border-r-4 border-emerald-500/30">
+                    <div>
+                        <p class="text-[10px] font-bold">Serie A • Lazio vs Milan</p>
+                        <p class="text-[9px] text-emerald-500 font-bold uppercase">Consiglio: Goal @ 1.75</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[8px] text-zinc-500 font-bold">AFFIDABILITÀ</p>
+                        <p class="text-[10px] font-black text-primary">88%</p>
                     </div>
                 </div>
-                <div id="terminal-text" class="flex flex-col gap-1">
-                    <p class="font-mono text-[11px] text-slate-400">&gt; Scansione ADM attiva...</p>
-                    <p id="status-msg" class="font-mono text-[11px] text-primary font-semibold italic">&gt; Seleziona i campionati e genera schedina.</p>
+            </div>
+        </section>
+
+        <!-- Pagina Surebet -->
+        <section id="surebet" class="page px-4 pt-20">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="navigateTo('home')" class="size-8 rounded-full bg-white/5 flex items-center justify-center text-xs"><i class="fas fa-arrow-left"></i></button>
+                <h3 class="text-lg font-bold">Analisi Surebet</h3>
+            </div>
+            
+            <div class="neo-card p-4 border-l-4 border-emerald-500">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-[10px] font-black bg-emerald-500/20 text-emerald-500 px-2 py-1 rounded">PROFITTO: 4.2%</span>
+                    <i class="fas fa-check-circle text-emerald-500 text-sm"></i>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center">
+                        <span class="text-[10px] font-bold">Bookmaker A (Esito 1)</span>
+                        <span class="text-xs font-black text-primary">2.15</span>
+                    </div>
+                    <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center">
+                        <span class="text-[10px] font-bold">Bookmaker B (Esito X2)</span>
+                        <span class="text-xs font-black text-primary">2.08</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- AI Slip Result (Hidden initially) -->
-        <div id="result-container" class="hidden animate-in fade-in slide-in-from-top-4 duration-500">
-             <div id="result-content" class="bg-primary/5 border border-primary/20 rounded-2xl p-5 text-sm font-body leading-relaxed whitespace-pre-line text-slate-300"></div>
-        </div>
+        <!-- Pagina Bot -->
+        <section id="bot" class="page px-4 pt-20">
+            <h3 class="text-lg font-bold mb-6">Neural Bot Auto-Trade</h3>
+            <div class="neo-card p-8 text-center">
+                <div id="bot-circle" class="size-24 rounded-full bg-zinc-900 flex items-center justify-center mx-auto mb-6 border-4 border-zinc-800 shadow-2xl relative">
+                    <i id="bot-icon" class="fas fa-robot text-4xl text-zinc-700"></i>
+                    <div id="bot-pulse" class="absolute inset-0 rounded-full bg-emerald-500/20 scale-0"></div>
+                </div>
+                <h4 id="bot-status" class="text-sm font-bold mb-1">Bot Stand-by</h4>
+                <p class="text-[10px] text-zinc-500 mb-8 uppercase tracking-widest">In attesa di istruzioni</p>
+                
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-white/5 p-3 rounded-xl">
+                        <p class="text-[8px] text-zinc-500 uppercase font-bold">Profitto Oggi</p>
+                        <p class="text-xs font-bold text-emerald-500">€0.00</p>
+                    </div>
+                    <div class="bg-white/5 p-3 rounded-xl">
+                        <p class="text-[8px] text-zinc-500 uppercase font-bold">Operazioni</p>
+                        <p class="text-xs font-bold text-primary">0</p>
+                    </div>
+                </div>
 
-        <!-- Bet Type Toggle -->
-        <div>
-            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 px-1">Bet Logic</h3>
-            <div class="flex p-1 bg-slate-200 dark:bg-[#1a2230] rounded-xl relative">
-                <label class="flex-1 relative cursor-pointer group text-center">
-                    <input checked="" class="peer sr-only" name="bet_type" type="radio" value="double"/>
-                    <div class="py-2.5 rounded-lg text-xs font-bold transition-all text-slate-500 peer-checked:bg-primary peer-checked:text-white">Doppia</div>
-                </label>
-                <label class="flex-1 relative cursor-pointer group text-center">
-                    <input class="peer sr-only" name="bet_type" type="radio" value="triple"/>
-                    <div class="py-2.5 rounded-lg text-xs font-bold transition-all text-slate-500 peer-checked:bg-primary peer-checked:text-white">Tripla</div>
-                </label>
+                <button onclick="toggleBot()" id="bot-toggle-btn" class="w-full bg-white/10 py-4 rounded-2xl font-black text-xs uppercase tracking-tighter">ATTIVA AUTOMAZIONE</button>
             </div>
-        </div>
+        </section>
 
-        <!-- League Selection Grid -->
-        <div>
-            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 px-1">Select Markets</h3>
-            <div class="grid grid-cols-2 gap-3" id="leagues-grid">
-                <!-- Serie A -->
-                <label class="relative cursor-pointer group league-item" data-id="soccer_italy_serie_a">
-                    <input checked="" class="peer sr-only" type="checkbox"/>
-                    <div class="relative overflow-hidden rounded-xl border-2 border-transparent bg-slate-100 dark:bg-[#1a2230] transition-all peer-checked:border-primary">
-                        <div class="h-20 w-full bg-cover bg-center" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDZomcCRnaqot_C_u-IwZyvUVBPbiCTXoswcrNTOKe88uUAGMMv_ev_xGSbVzNHIIwYqL6snVobjZg04Ti-ZFSefhIQH7Gj8HTZ1HQq6vVVQg-rZwG-hVBJCsqOiVPZXdt2wFdm9JM5uWwk1COWIhfGyrygcPZPEqbkKz9IKJG4x3ZB8Qt4Jg5MClHevK_s4CtvfFXTXENapgNUEj2icNkve4n6selj_uu3IQMmw53ja0W4-CZ56msej6GjmQQLLEP01Twfa_mMA7tN");'></div>
-                        <div class="p-3"><p class="font-bold text-xs dark:text-white">Serie A</p></div>
-                    </div>
-                </label>
-                <!-- Premier -->
-                <label class="relative cursor-pointer group league-item" data-id="soccer_epl">
-                    <input checked="" class="peer sr-only" type="checkbox"/>
-                    <div class="relative overflow-hidden rounded-xl border-2 border-transparent bg-slate-100 dark:bg-[#1a2230] transition-all peer-checked:border-primary">
-                        <div class="h-20 w-full bg-cover bg-center" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCaXDV5sHUrDVD38K5PurcNienmfBcx0TFm6-duXsVIPokJ96-jwUHHLyZHDpNOBP8yXsTcK9wtJ0U9eVFVJUskZTJrEy4vmdYKC-02vugGhkG5VZpqziJsiUmWlAxdXopldHPeEEad5nMD1W0cGH5LmMWE-OKZ-qzs1jGFEX3pBtD0RFPN3UADPQ0UEYsrB7Mv8MvQ823dDJQT6iBs0VoQ-SYIBnhDSzSnagv6wV9xtuC2Bn-D30HCpnpo5AZalGIV-4TXBHJPJIAU");'></div>
-                        <div class="p-3"><p class="font-bold text-xs dark:text-white">Premier Lg</p></div>
-                    </div>
-                </label>
-                <!-- La Liga -->
-                <label class="relative cursor-pointer group league-item" data-id="soccer_spain_la_liga">
-                    <input checked="" class="peer sr-only" type="checkbox"/>
-                    <div class="relative overflow-hidden rounded-xl border-2 border-transparent bg-slate-100 dark:bg-[#1a2230] transition-all peer-checked:border-primary">
-                        <div class="h-20 w-full bg-cover bg-center" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGeocIrKDIzFNdoadhh9kUHdlYpnLDrIb1TV8_KDdMJAySIF8da1a_457Ak9aMmBF2PwlbXvldMnd8S3NahgYId_4eB2k9mkDkgwk8qi_qPgxcQYzo9rYrkHstIU2iN8oPY1-Qy_zj4FdIX5lW1vgcQ-XW7CW-pv2QWhIlC1bd0gRCt7romrNDrs1Zyzt7D2vPPcIjPPzmkissv-wXJaGgYRot8bKkuSbT4KcO2oan7oM0t6_BLzyIEOg-l7OsxlSo9nrQV6afk42b");'></div>
-                        <div class="p-3"><p class="font-bold text-xs dark:text-white">La Liga</p></div>
-                    </div>
-                </label>
-                <!-- Bundesliga -->
-                <label class="relative cursor-pointer group league-item" data-id="soccer_germany_bundesliga">
-                    <input checked="" class="peer sr-only" type="checkbox"/>
-                    <div class="relative overflow-hidden rounded-xl border-2 border-transparent bg-slate-100 dark:bg-[#1a2230] transition-all peer-checked:border-primary">
-                        <div class="h-20 w-full bg-cover bg-center" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuC5ebRGjxy4vUgWTi3BZaaR-zolfrvi23BukOyg3Kd-vMcI86hWaYYWPpBlv0ew0i84nT2FaufDGszIP7Nc50pbmGcurpammsBx3SodeS3CSiQVPnuQwvZT8mgOu9B6Pe1wi3DTmv0bOVTOsi2Nf1EF3ObZCODmXDpsOGlXJhJ7gFcnoGk1au5xrNBEs7j0r6HjEx_GDVpq2co8XW3R7Sollr-tzdvEn32FvW45fh1KQQuc9JwP46OwUXVPc70H9mAm8HCeaFl5llt9");'></div>
-                        <div class="p-3"><p class="font-bold text-xs dark:text-white">Bundesliga</p></div>
-                    </div>
-                </label>
-            </div>
-        </div>
-
-        <div class="h-32"></div>
     </main>
 
-    <!-- Bottom Action Bar -->
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-background-dark via-background-dark to-transparent pt-12 pb-8 px-4">
-        <div class="max-w-md mx-auto w-full flex flex-col gap-3">
-            <button id="generateBtn" onclick="generateAISlip()" class="relative w-full overflow-hidden rounded-2xl bg-primary hover:bg-blue-600 active:scale-[0.98] transition-all group shadow-lg shadow-primary/30">
-                <div class="relative flex items-center justify-center py-4 px-6 gap-3">
-                    <span class="material-symbols-outlined text-white animate-pulse">auto_awesome</span>
-                    <span class="text-white text-lg font-bold tracking-wide uppercase">Generate AI Slip</span>
-                </div>
-            </button>
-            <button onclick="resetUI()" class="text-[10px] font-bold text-slate-500 uppercase py-2 flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[16px]">restart_alt</span> Reset Filters
-            </button>
-        </div>
-    </div>
+    <!-- Navigazione Inferiore -->
+    <nav id="app-nav" class="hidden glass-nav fixed bottom-0 w-full h-20 flex items-center justify-around z-50 px-4">
+        <button onclick="navigateTo('home')" class="nav-btn flex flex-col items-center gap-1 text-primary">
+            <i class="fas fa-brain text-xl"></i>
+            <span class="text-[9px] font-bold uppercase">Gen IA</span>
+        </button>
+        <button onclick="navigateTo('bot')" class="nav-btn flex flex-col items-center gap-1 text-zinc-500">
+            <i class="fas fa-robot text-xl"></i>
+            <span class="text-[9px] font-bold uppercase">Bot</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 text-zinc-500">
+            <i class="fas fa-chart-simple text-xl"></i>
+            <span class="text-[9px] font-bold uppercase">Dati</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 text-zinc-500">
+            <i class="fas fa-user-shield text-xl"></i>
+            <span class="text-[9px] font-bold uppercase">Profilo</span>
+        </button>
+    </nav>
 
     <script>
-        const apiKey = ""; 
-        const ODDS_API_KEY = "f31093dd321254076707f7bcb1fd2234";
+        // Funzione Navigazione
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            // Aggiorna icone navigazione
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const label = btn.querySelector('span').innerText.toLowerCase();
+                if (pageId.includes(label) || (pageId === 'home' && label === 'gen ia')) {
+                    btn.classList.add('text-primary');
+                    btn.classList.remove('text-zinc-500');
+                } else {
+                    btn.classList.add('text-zinc-500');
+                    btn.classList.remove('text-primary');
+                }
+            });
+            
+            // Scroll in alto
+            document.getElementById(pageId).scrollTop = 0;
+        }
 
-        async function generateAISlip() {
-            const btn = document.getElementById('generateBtn');
-            const statusMsg = document.getElementById('status-msg');
-            const statusDot = document.getElementById('status-dot');
-            const terminal = document.getElementById('status-terminal');
-            const resultBox = document.getElementById('result-container');
-            const resultContent = document.getElementById('result-content');
+        // Avvio App
+        function startApp() {
+            document.getElementById('welcome').classList.remove('active');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('app-nav').classList.remove('hidden');
+            navigateTo('home');
+        }
 
-            // 1. UI Loading State
+        // Simulazione Generazione
+        function simulateGeneration() {
+            const btn = document.getElementById('gen-btn');
+            const original = btn.innerHTML;
             btn.disabled = true;
-            statusDot.classList.replace('bg-green-500', 'bg-amber-500');
-            statusMsg.innerHTML = "&gt; Scansione cross-league in corso...";
-            terminal.classList.add('scanning-active');
-            terminal.insertAdjacentHTML('beforeend', '<div class="scanning-line"></div>');
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Scansione in corso...';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Analisi Completata';
+                btn.classList.replace('bg-primary', 'bg-emerald-500');
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.classList.replace('bg-emerald-500', 'bg-primary');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        }
 
-            // 2. Rileva leghe selezionate
-            const selectedLeagues = Array.from(document.querySelectorAll('.league-item')).filter(i => i.querySelector('input').checked).map(i => i.dataset.id);
-            const betType = document.querySelector('input[name="bet_type"]:checked').value;
+        // Logica Bot
+        let botActive = false;
+        function toggleBot() {
+            botActive = !botActive;
+            const btn = document.getElementById('bot-toggle-btn');
+            const icon = document.getElementById('bot-icon');
+            const status = document.getElementById('bot-status');
+            const pulse = document.getElementById('bot-pulse');
 
-            try {
-                // 3. Fetch dati
-                const promises = selectedLeagues.map(l => fetch(`https://api.the-odds-api.com/v4/sports/${l}/odds/?apiKey=${ODDS_API_KEY}&regions=eu&markets=h2h`).then(r => r.json()));
-                const results = await Promise.all(promises);
-                const matches = results.flat().slice(0, 15);
-
-                statusMsg.innerHTML = "&gt; Elaborazione Neural Network...";
-
-                // 4. Analisi IA
-                const systemPrompt = "Sei Neural X-1. Crea schedine ADM a basso rischio (1X, X2, Over 1.5, Goal Casa) incrociando i campionati. Indica sempre Bookmaker ADM italiani (SNAI, Sisal, Eurobet).";
-                const userPrompt = `Dati: ${JSON.stringify(matches.map(m => ({league: m.sport_title, t: m.home_team + " vs " + m.away_team, q: m.bookmakers[0]?.markets[0].outcomes})))}. Genera una ${betType.toUpperCase()} schematica.`;
-
-                const aiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: userPrompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                const data = await aiRes.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Errore elaborazione. Riprova.";
-
-                // 5. Display Result
-                statusMsg.innerHTML = "&gt; Schedina generata con successo.";
-                statusDot.classList.replace('bg-amber-500', 'bg-green-500');
-                
-                resultBox.classList.remove('hidden');
-                resultContent.innerHTML = `<div class="flex items-center gap-2 mb-3 text-primary"><span class="material-symbols-outlined text-sm">verified</span><span class="text-[10px] font-black uppercase tracking-widest">Analisi Completata</span></div>${text}`;
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            } catch (e) {
-                statusMsg.innerHTML = "&gt; Errore critico nel collegamento API.";
-                statusDot.classList.replace('bg-amber-500', 'bg-red-500');
-            } finally {
-                btn.disabled = false;
-                document.querySelector('.scanning-line')?.remove();
+            if(botActive) {
+                btn.classList.replace('bg-white/10', 'bg-emerald-500');
+                btn.classList.add('text-white');
+                btn.innerText = "Spegni Bot";
+                icon.classList.replace('text-zinc-700', 'text-emerald-500');
+                status.innerText = "Bot in Esecuzione";
+                pulse.classList.add('animate-ping');
+                pulse.classList.replace('scale-0', 'scale-100');
+            } else {
+                btn.classList.replace('bg-emerald-500', 'bg-white/10');
+                btn.classList.remove('text-white');
+                btn.innerText = "Attiva Automazione";
+                icon.classList.replace('text-emerald-500', 'text-zinc-700');
+                status.innerText = "Bot Stand-by";
+                pulse.classList.remove('animate-ping');
+                pulse.classList.replace('scale-100', 'scale-0');
             }
         }
 
-        function resetUI() {
-            document.getElementById('result-container').classList.add('hidden');
-            document.getElementById('status-msg').innerHTML = "&gt; Seleziona i campionati e genera schedina.";
-            document.querySelectorAll('.league-item input').forEach(i => i.checked = true);
-        }
+        // Loader Iniziale
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1500);
+        });
     </script>
 </body>
 </html>
